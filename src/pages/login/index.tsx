@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -11,6 +10,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import Gallery from '@/components/gallery';
 import { toast } from 'react-toastify';
+import MyButton from '@/components/MyButton';
 
 interface ILoginProps {
 }
@@ -27,6 +27,8 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
   const [formData, setFormData] = useState<UserLogin>(initialValues);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+
   const changeFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -34,36 +36,36 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
     })
   }
   
-  const handleLogin = async () => {
+  const handleAuth = async (method: 'email' | 'google' | 'github') => {
     try {
-      await login(formData.email, formData.password);
-      toast.success("Login successful");
-      navigate("/");
+      setIsLoggingIn(true);
+      
+      switch (method) {
+        case 'email':
+          if (!formData.email || !formData.password) {
+            toast.error("Please fill in all fields");
+            return;
+          }
+          await login(formData.email, formData.password);
+          toast.success("Login successful");
+          navigate("/");
+          break;
+        case 'google':
+          await googleSignIn();
+          toast.success("Login successful");
+          navigate("/");
+          break;
+        case 'github':
+          await githubSignIn();
+          toast.success("Login successful");
+          navigate("/");
+          break;
+      }
     } catch (error) {
       toast.error("Login failed");
       console.error(error);
-    }
-  }
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await googleSignIn();
-      toast.success("Login successful");
-      navigate("/");
-    } catch (error) {
-      toast.error("Login failed");
-      console.error(error);
-    }
-  }
-  
-  const handleGithubSignIn = async () => {
-    try {
-      await githubSignIn();
-      toast.success("Login successful");
-      navigate("/");
-    } catch (error) {
-      toast.error("Login failed");
-      console.error(error);
+    } finally {
+      setIsLoggingIn(false);
     }
   }
   
@@ -85,20 +87,22 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
           <CardContent>
             <FieldGroup>
               <Field className="grid grid-cols-2 gap-6">
-                <Button 
+                <MyButton 
                   variant="outline"
-                  onClick={handleGithubSignIn}
+                  onClick={() => handleAuth('github')}
+                  disabled={isLoggingIn}
                 >
                   <FaGithub />
                   GitHub
-                </Button>
-                <Button 
+                </MyButton>
+                <MyButton 
                   variant="outline"
-                  onClick={handleGoogleSignIn}
+                  onClick={() => handleAuth('google')}
+                  disabled={isLoggingIn}
                 >
                   <FcGoogle />
                   Google
-                </Button>
+                </MyButton>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
@@ -134,7 +138,11 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
                 </div>
               </Field>
               <Field>
-                <Button onClick={handleLogin}>Login</Button>
+                <MyButton 
+                  isLoading={isLoggingIn}
+                  disabled={isLoggingIn}
+                  onClick={() => handleAuth('email')}
+                >Login</MyButton>
               </Field>
               <Label className="mx-auto w-fit text-sm text-muted-foreground">
                 Don&apos;t have an account?

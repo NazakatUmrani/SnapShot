@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -11,6 +10,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import Gallery from '@/components/gallery';
 import { toast } from 'react-toastify';
+import MyButton from '@/components/MyButton';
 
 interface ISignupProps {
 }
@@ -28,6 +28,8 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
   const [formData, setFormData] = useState<UserSignUp>(initialValues);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+
   const changeFormData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -35,36 +37,39 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
     })
   }
   
-  const handleSignUp = async () => {
+  const handleAuth = async (method: 'email' | 'google' | 'github') => {
     try {
-      await signUp(formData.email, formData.password);
-      toast.success("Account created successfully");
-      navigate("/login");
+      setIsSigningUp(true);
+      
+      switch (method) {
+        case 'email':
+          if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return
+          } else if (formData.password.length < 6) {
+            toast.error("Password must be at least 6 characters long");
+            return
+          } else if (formData.email.length < 6) {
+            toast.error("Email must be at least 6 characters long");
+            return
+          }
+          await signUp(formData.email, formData.password);
+          navigate("/login");
+          break;
+        case 'google':
+          await googleSignIn();
+          navigate("/");
+          break;
+        case 'github':
+          await githubSignIn();
+          navigate("/");
+          break;
+      }
     } catch (error) {
       toast.error("Account creation failed");
       console.error(error);
-    }
-  }
-
-  const handleGoogleSignUp = async () => {
-    try {
-      await googleSignIn();
-      toast.success("Account created successfully");
-      navigate("/");
-    } catch (error) {
-      toast.error("Account creation failed");
-      console.error(error);
-    }
-  }
-  
-  const handleGithubSignUp = async () => {
-    try {
-      await githubSignIn();
-      toast.success("Account created successfully");
-      navigate("/");
-    } catch (error) {
-      toast.error("Account creation failed");
-      console.error(error);
+    } finally {
+      setIsSigningUp(false);
     }
   }
 
@@ -86,20 +91,22 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
           <CardContent>
             <FieldGroup>
               <Field className="grid grid-cols-2 gap-6">
-                <Button 
+                <MyButton 
                   variant="outline"
-                  onClick={handleGithubSignUp}
+                  onClick={() => handleAuth('github')}
+                  disabled={isSigningUp}
                 >
                   <FaGithub />
                   GitHub
-                </Button>
-                <Button 
+                </MyButton>
+                <MyButton 
                   variant="outline"
-                  onClick={handleGoogleSignUp}
+                  onClick={() => handleAuth('google')}
+                  disabled={isSigningUp}
                 >
                   <FcGoogle />
                   Google
-                </Button>
+                </MyButton>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
@@ -154,7 +161,11 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
                 </div>
               </Field>
               <Field>
-                <Button onClick={handleSignUp}>Signup</Button>
+                <MyButton 
+                  isLoading={isSigningUp}
+                  disabled={isSigningUp}
+                  onClick={() => handleAuth('email')}
+                >Signup</MyButton>
               </Field>
               <Label className="mx-auto w-fit text-sm text-muted-foreground">
                 Already have an account?
