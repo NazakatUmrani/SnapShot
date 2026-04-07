@@ -1,16 +1,18 @@
-import * as React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useUserAuth } from "@/context/userAuthContext"
+import * as React from "react"
+import { Navigate, Outlet, useLocation } from "react-router-dom"
 
-interface IProtectedRoutesProps {
+interface IProtectedRoutesProps {}
+
+const ProtectedRoutes: React.FunctionComponent<IProtectedRoutesProps> = () => {
+  const { user } = useUserAuth();
+  const location = useLocation()
+
+  return user ? (
+    <Outlet />
+  ) : (
+    <Navigate to="/login" state={{ from: location }} />
+  )
 }
 
-const ProtectedRoutes: React.FunctionComponent<IProtectedRoutesProps> = (props) => {
-  const isAuthenticated:boolean = false;
-    const location = useLocation();
-
-    return isAuthenticated ? 
-        (<Outlet />) : 
-        (<Navigate to='/login' state={{ from: location }}/>);
-};
-
-export default ProtectedRoutes;
+export default ProtectedRoutes
