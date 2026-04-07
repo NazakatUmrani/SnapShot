@@ -7,31 +7,37 @@ import CreatePost from "./pages/post";
 import Profile from "./pages/profile";
 import MyPhotos from "./pages/myphotos";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import Layout from "./components/layout";
 
 export const router = createBrowserRouter([
     {
         element: <ProtectedRoutes />,
         children: [
             {
-                path: "/",
-                element: <Home />,
-                errorElement: <Error />
-            },
-            {
-                path: "/post",
-                element: <CreatePost />,
-                errorElement: <Error />
-            },
-            {
-                path: "/profile",
-                element: <Profile />,
-                errorElement: <Error />
-            },
-            {
-                path: "/myphotos",
-                element: <MyPhotos />,
-                errorElement: <Error />
-            },
+                element: <Layout />,
+                children: [
+                    {
+                        path: "/",
+                        element: <Home />,
+                        errorElement: <Error />
+                    },
+                    {
+                        path: "/post",
+                        element: <CreatePost />,
+                        errorElement: <Error />
+                    },
+                    {
+                        path: "/profile",
+                        element: <Profile />,
+                        errorElement: <Error />
+                    },
+                    {
+                        path: "/myphotos",
+                        element: <MyPhotos />,
+                        errorElement: <Error />
+                    },
+                ]
+            }
         ]
     },
     {
