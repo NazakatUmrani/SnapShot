@@ -10,6 +10,7 @@ import { useUserAuth } from '@/context/userAuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import Gallery from '@/components/gallery';
+import { toast } from 'react-toastify';
 
 interface ISignupProps {
 }
@@ -37,8 +38,10 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
   const handleSignUp = async () => {
     try {
       await signUp(formData.email, formData.password);
-      navigate("/");
+      toast.success("Account created successfully");
+      navigate("/login");
     } catch (error) {
+      toast.error("Account creation failed");
       console.error(error);
     }
   }
@@ -46,8 +49,10 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
   const handleGoogleSignUp = async () => {
     try {
       await googleSignIn();
+      toast.success("Account created successfully");
       navigate("/");
     } catch (error) {
+      toast.error("Account creation failed");
       console.error(error);
     }
   }
@@ -55,8 +60,10 @@ const Signup: React.FunctionComponent<ISignupProps> = () => {
   const handleGithubSignUp = async () => {
     try {
       await githubSignIn();
+      toast.success("Account created successfully");
       navigate("/");
     } catch (error) {
+      toast.error("Account creation failed");
       console.error(error);
     }
   }

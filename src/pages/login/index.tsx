@@ -10,6 +10,7 @@ import { FaEye, FaEyeSlash, FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { Link, useNavigate } from 'react-router-dom';
 import Gallery from '@/components/gallery';
+import { toast } from 'react-toastify';
 
 interface ILoginProps {
 }
@@ -36,8 +37,10 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
   const handleLogin = async () => {
     try {
       await login(formData.email, formData.password);
+      toast.success("Login successful");
       navigate("/");
     } catch (error) {
+      toast.error("Login failed");
       console.error(error);
     }
   }
@@ -45,8 +48,10 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
   const handleGoogleSignIn = async () => {
     try {
       await googleSignIn();
+      toast.success("Login successful");
       navigate("/");
     } catch (error) {
+      toast.error("Login failed");
       console.error(error);
     }
   }
@@ -54,8 +59,10 @@ const Login: React.FunctionComponent<ILoginProps> = () => {
   const handleGithubSignIn = async () => {
     try {
       await githubSignIn();
+      toast.success("Login successful");
       navigate("/");
     } catch (error) {
+      toast.error("Login failed");
       console.error(error);
     }
   }
