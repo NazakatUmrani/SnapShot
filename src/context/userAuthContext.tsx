@@ -1,6 +1,6 @@
 import { firebaseAuth } from "@/firebaseConfig";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, type User, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
-import { createContext, useContext, useState } from "react";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, type User, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, GithubAuthProvider } from "firebase/auth";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type AuthContextData = {
     user: User | null;
@@ -8,6 +8,7 @@ type AuthContextData = {
     signUp: typeof signUp;
     logOut: typeof logOut;
     googleSignIn: typeof googleSignIn;
+    githubSignIn: typeof githubSignIn;
 }
 
 const login = (email: string, password: string) => {
@@ -27,12 +28,18 @@ const googleSignIn = () => {
     return signInWithPopup(firebaseAuth, googleAuthProvider);
 }
 
+const githubSignIn = () => {
+    const githubAuthProvider = new GithubAuthProvider();
+    return signInWithPopup(firebaseAuth, githubAuthProvider);
+}
+
 export const userAuthContext = createContext<AuthContextData>({
     user: null,
     login,
     signUp,
     logOut,
-    googleSignIn
+    googleSignIn,
+    githubSignIn
 });
 
 interface IUserAuthProvider {
@@ -47,10 +54,11 @@ export const UserAuthProvider: React.FunctionComponent<IUserAuthProvider> = ({ c
         login,
         signUp,
         logOut,
-        googleSignIn
+        googleSignIn,
+        githubSignIn
     }
 
-    const useEffect(() => {
+    useEffect(() => {
         const unsubscribe = onAuthStateChanged(firebaseAuth, user => {
             if (user) setUser(user);
             return () => {
@@ -59,9 +67,9 @@ export const UserAuthProvider: React.FunctionComponent<IUserAuthProvider> = ({ c
         })
     });
     
-    return <userAuthContext.Provider value={}>{children}</userAuthContext.Provider>
+    return <userAuthContext.Provider value={value}>{children}</userAuthContext.Provider>
 }
 
-export const userUserAuth = () => {
+export const useUserAuth = () => {
     return useContext(userAuthContext);
 }
