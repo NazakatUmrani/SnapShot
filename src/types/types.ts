@@ -1,3 +1,4 @@
+import type { OutputFileEntry } from '@uploadcare/react-uploader';
 import { type IconType } from 'react-icons';
 
 export interface NavItem {
@@ -7,12 +8,30 @@ export interface NavItem {
 }
 
 export interface UserSignUp {
-    email: string,
-    password: string,
+    email: string;
+    password: string;
     confirmPassword: string
 }
 
 export interface UserLogin {
-    email: string,
-    password: string,
+    email: string;
+    password: string;
+}
+
+export interface PhotoMeta {
+    cdnUrl: string;
+    uuid: string;
+}
+
+export interface Post {
+    caption: string;
+    images: PhotoMeta[];
+    likes: number;
+    userLikes: [];
+    userId: string | null;
+    date: Date;
+}
+
+export interface FileEntry {
+    files: OutputFileEntry[];
 }

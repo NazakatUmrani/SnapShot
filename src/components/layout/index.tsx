@@ -12,7 +12,7 @@ const Layout: React.FunctionComponent<ILayoutProps> = (props) => {
         <aside className='flex gap-x-4 bg-sidebar lg:w-60 h-full'>
             <Sidebar />
         </aside>
-        <div className='w-full'>
+        <div className='w-full flex justify-center items-center'>
             <Outlet />
         </div>
         <aside className='hidden lg:block bg-sidebar lg:w-60 h-full'>

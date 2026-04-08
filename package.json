@@ -16,6 +16,8 @@
     "@hugeicons/core-free-icons": "^4.1.1",
     "@hugeicons/react": "^1.1.6",
     "@tailwindcss/vite": "^4.2.1",
+    "@uploadcare/react-uploader": "^1.14.0",
+    "@uploadcare/rest-client": "^6.18.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "firebase": "^12.11.0",
