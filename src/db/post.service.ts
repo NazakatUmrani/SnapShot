@@ -13,7 +13,7 @@ export const getPosts = () => {
     return getDocs(q);
 }
 
-export const getPostByUserId = (userId: string) => {
+export const getPostsByUserId = (userId: string) => {
     const q = query(collection(firebaseDB, COLLLECTION_NAME), where("userId", "==", userId));
     return getDocs(q);
 }

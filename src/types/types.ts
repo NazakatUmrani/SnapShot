@@ -35,3 +35,7 @@ export interface Post {
 export interface FileEntry {
     files: OutputFileEntry[];
 }
+
+export interface MyPost extends Post {
+    id: string;
+}
